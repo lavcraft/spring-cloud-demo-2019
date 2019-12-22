@@ -25,11 +25,8 @@ import java.util.stream.Collectors;
 public class ExaminatorController {
     private WebClient webClient;
 
-    public ExaminatorController(WebClient.Builder builder,
-                                LoadBalancerClient loadBalncerClient) {
-        this.webClient = builder
-                .filter(new LoadBalancerExchangeFilterFunction(loadBalncerClient))
-                .build();
+    public ExaminatorController(@LoadBalanced WebClient.Builder builder) {
+        this.webClient = builder.build();
     }
 
 

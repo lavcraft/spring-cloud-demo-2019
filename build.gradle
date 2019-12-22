@@ -1,7 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.1.9.RELEASE' apply false
+    id 'org.springframework.boot' version '2.2.2.RELEASE' apply false
 }
-
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -15,6 +14,10 @@ allprojects {
     }
 }
 
+ext {
+    serviceProjects = subprojects.findAll { it.name.endsWith('-service') }
+}
+
 subprojects {
     apply plugin: 'java'
 
@@ -25,9 +28,9 @@ subprojects {
         //dependency management
         [
                 enforcedPlatform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES),
-                platform('org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE'),
+                platform('org.springframework.cloud:spring-cloud-dependencies:Hoxton.RELEASE'),
                 platform('org.springframework.cloud:spring-cloud-bus:2.1.3.RELEASE'),
-                platform('org.junit:junit-bom:5.4.1'),
+                platform('org.junit:junit-bom:5.5.2'),
         ].each {
             implementation it
             annotationProcessor it
@@ -50,11 +53,8 @@ subprojects {
     }
 }
 
-configure([
-        project(':examinator'),
-        project(':java'),
-        project(':theology'),
-]) {
+
+configure(serviceProjects) {
     apply plugin: 'org.springframework.boot'
 
     dependencies {
@@ -63,6 +63,7 @@ configure([
                 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client',
                 'org.springframework.cloud:spring-cloud-starter-config',
                 'org.springframework.cloud:spring-cloud-starter-bus-amqp',
+                'org.springframework.cloud:spring-cloud-loadbalancer',
                 'org.springframework.cloud:spring-cloud-starter-feign:1.4.7.RELEASE'
     }
 }
